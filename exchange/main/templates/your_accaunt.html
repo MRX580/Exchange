@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+    <br>
+    <br>
+    <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        {% for i in name_coin %}
+        <td>{{ i }}</td>
+        {% endfor %}
+      </tr>
+    </tbody>
+      <thead>
+      <tr>
+        <th scope="col">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        {% for i in col_vo_coin %}
+        <td>{{ i }}</td>
+        {% endfor %}
+      </tr>
+    </tbody>
+      <thead>
+      <tr>
+        <th scope="col">Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        {% for i in price %}
+        <td>{{ i }}</td>
+        {% endfor %}
+      </tr>
+    </tbody>
+      <thead>
+      <tr>
+        <th scope="col">24H Change</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        {% for i in changes %}
+        <td>{{ i }}</td>
+        {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+{% endblock %}

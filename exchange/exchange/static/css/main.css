@@ -1,0 +1,30 @@
+.window {
+    margin: 10px 25px;
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.card {
+    margin: 15px 10px;
+    max-width: 900px;
+    min-height: 360px;
+}
+
+.coin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 0px;
+    border-top: 1px solid #eff2f5;
+}
+
+
+.coin div {
+    height: 100%;
+    text-align: center;
+    flex: 1;
+}

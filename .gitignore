@@ -1,0 +1,4 @@
+venv
+.idea
+exchange/exchange/settings.py
+exchange/db.sqlite3
