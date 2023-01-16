@@ -30,7 +30,7 @@ def Sing_up(request):
                 messages.error(request, "Secret Key not valid")
             else:
                 form.save()
-                return redirect('/your_account')
+                return redirect('/wallet/your_account/')
         else:
             error = 'Form is not valid'
     form = TaskForm()
@@ -47,7 +47,7 @@ def signin(request):
         login_form = LoginForm(request.POST)
         if login_form.is_valid():
             login_form.save()
-            return redirect('/profile')
+            return redirect('/wallet/profile')
         else:
             error = 'Form is not valid'
     form = LoginForm()
@@ -128,10 +128,6 @@ def account_for_login(request):
                                 else:
                                     changes.append(str(change) + ' %')
                     return render(request, 'your_accaunt.html', {'name_coin': name_coins, 'col_vo_coin': col_vo_coins, 'price': price, 'changes': changes})
-
-
-def choice(request):
-    return render(request, 'choice.html')
 
 
 def account(request):
