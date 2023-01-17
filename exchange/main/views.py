@@ -127,10 +127,10 @@ def account(request):
     your_models = User.objects.all()
     apis = []
     for model in your_models:
-        apis.append(model.password2)
+        apis.append(model.first_name)
     col_vo_strock = len(apis) - 1
     api = your_models[col_vo_strock]
-    api_key_get = api.password2
+    api_key_get = api.first_name
     secret_key_get = api.last_name
     client = Client(api_key_get, secret_key_get)
     info = client.get_account().get('balances')

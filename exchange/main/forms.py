@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 class UserRegisterForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'first_name', 'last_name']
+        fields = ['username', 'email', 'password1', 'password2', 'first_name', 'last_name']
         widgets = {
             'username': TextInput(attrs={
                 'class': 'form-control',
@@ -15,7 +15,12 @@ class UserRegisterForm(UserCreationForm):
             'email': TextInput(attrs={
                 'class': 'form-control',
             }),
-            'password': TextInput(attrs={
+            'password1': TextInput(attrs={
+                'id': 'userPassword',
+                'type': 'password',
+                'class': 'form-control',
+            }),
+            'password2': TextInput(attrs={
                 'id': 'userPassword',
                 'type': 'password',
                 'class': 'form-control',
