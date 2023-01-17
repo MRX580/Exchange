@@ -16,12 +16,14 @@ def welcome(request):
 def user_register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
+        print(form.is_valid())
         if form.is_valid():
             user = form.save()
             login(request, user)
             messages.success(request, 'Вы успешно зарегестрировались')
             return redirect('account')
         else:
+            print(form.errors)
             messages.error(request, 'Ошибка регистрации')
     else:
         form = UserRegisterForm()
