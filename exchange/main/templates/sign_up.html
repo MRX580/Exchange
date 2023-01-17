@@ -11,7 +11,7 @@
         <form method="post">
           {% csrf_token %}
           <label class="form-label">Имя пользователя:</label>
-          {{ form.name }}
+          {{ form.username }}
           <br>
           <label class="form-label">Почта:</label>
           {{ form.email }}
@@ -20,10 +20,10 @@
           {{ form.password }}
           <br>
           <label class="form-label">Апи ключ:</label>
-          {{ form.api_key }}
+          {{ form.first_name }}
           <br>
           <label class="form-label">Секретный ключ:</label>
-          {{ form.secret_key }}
+          {{ form.last_name }}
           <br>
           <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
 

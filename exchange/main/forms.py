@@ -1,13 +1,15 @@
 from .models import Signup, Signin
 from django.forms import ModelForm, TextInput
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 
-class TaskForm(ModelForm):
+class UserRegisterForm(UserCreationForm):
     class Meta:
-        model = Signup
-        fields = ['name', 'email', 'password', 'api_key', 'secret_key']
+        model = User
+        fields = ['username', 'email', 'password', 'first_name', 'last_name']
         widgets = {
-            'name': TextInput(attrs={
+            'username': TextInput(attrs={
                 'class': 'form-control',
             }),
             'email': TextInput(attrs={
@@ -18,10 +20,10 @@ class TaskForm(ModelForm):
                 'type': 'password',
                 'class': 'form-control',
             }),
-            'api_key': TextInput(attrs={
+            'first_name': TextInput(attrs={
                 'class': 'form-control',
             }),
-            'secret_key': TextInput(attrs={
+            'last_name': TextInput(attrs={
                 'class': 'form-control',
             }),
         }

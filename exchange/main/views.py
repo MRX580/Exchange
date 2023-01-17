@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect, HttpResponse
-from .forms import TaskForm, LoginForm
+from .forms import UserRegisterForm, LoginForm
 from binance.client import Client
 from .models import *
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 
@@ -10,35 +13,20 @@ def welcome(request):
     return render(request, 'main.html')
 
 
-def Sing_up(request):
-    error = ''
+def user_register(request):
     if request.method == 'POST':
-        form = TaskForm(request.POST)
+        form = UserRegisterForm(request.POST)
         if form.is_valid():
-            api = len(form.cleaned_data['api_key'])
-            secret = len(form.cleaned_data['secret_key'])
-            email = form.cleaned_data['email']
-            if Signup.objects.filter(email__iexact=email).exists():
-                messages.error(request, "Such mail exists")
-            elif Signup.objects.filter(api_key__iexact=form.cleaned_data['api_key']).exists():
-                messages.error(request, "Such Api Key exists")
-            elif Signup.objects.filter(secret_key__iexact=form.cleaned_data['secret_key']).exists():
-                messages.error(request, "Such Secret Key exists")
-            elif api < 64 or api > 64:
-                messages.error(request, "Api Key not valid")
-            elif secret < 64 or secret > 64:
-                messages.error(request, "Secret Key not valid")
-            else:
-                form.save()
-                return redirect('/wallet/your_account/')
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Вы успешно зарегестрировались')
+            return redirect('account')
         else:
-            error = 'Form is not valid'
-    form = TaskForm()
-    context = {
-        'form': form,
-        'error': error
-    }
-    return render(request, 'sign_up.html', context)
+            messages.error(request, 'Ошибка регистрации')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'sign_up.html', {'form': form})
+
 
 
 def signin(request):
@@ -122,23 +110,26 @@ def account_for_login(request):
                             else:
                                 cost = round(float(client.get_symbol_ticker(symbol=coin + 'USDT').get('price')), 2)
                                 price.append(str(cost) + ' $')
-                                change = round(float(client.get_ticker(symbol=coin + 'USDT').get('priceChangePercent')), 2)
+                                change = round(float(client.get_ticker(symbol=coin + 'USDT').get('priceChangePercent')),
+                                               2)
                                 if change > 0:
                                     changes.append('+ ' + str(change) + ' %')
                                 else:
                                     changes.append(str(change) + ' %')
-                    return render(request, 'your_accaunt.html', {'name_coin': name_coins, 'col_vo_coin': col_vo_coins, 'price': price, 'changes': changes})
+                    return render(request, 'your_accaunt.html',
+                                  {'name_coin': name_coins, 'col_vo_coin': col_vo_coins, 'price': price,
+                                   'changes': changes})
 
 
 def account(request):
-    your_models = Signup.objects.all()
+    your_models = User.objects.all()
     apis = []
     for model in your_models:
-        apis.append(model.api_key)
+        apis.append(model.password2)
     col_vo_strock = len(apis) - 1
     api = your_models[col_vo_strock]
-    api_key_get = api.api_key
-    secret_key_get = api.secret_key
+    api_key_get = api.password2
+    secret_key_get = api.last_name
     client = Client(api_key_get, secret_key_get)
     info = client.get_account().get('balances')
     name_coins = []
@@ -182,4 +173,6 @@ def account(request):
                     changes.append('+ ' + str(change) + ' %')
                 else:
                     changes.append(str(change) + ' %')
-    return render(request, 'your_accaunt.html', {'name_coin': name_coins, 'col_vo_coin': col_vo_coins, 'price': price, 'changes': changes})
+    return render(request, 'your_accaunt.html',
+                  {'name_coin': name_coins, 'col_vo_coin': col_vo_coins, 'price': price, 'changes': changes})
+
