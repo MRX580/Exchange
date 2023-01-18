@@ -10,26 +10,8 @@
       <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
         <form method="post">
           {% csrf_token %}
-          <label class="form-label">Имя пользователя:</label>
-          {{ form.username }}
-          <br>
-          <label class="form-label">Почта:</label>
-          {{ form.email }}
-          <br>
-          <label class="form-label">Пароль:</label>
-          {{ form.password1 }}
-          <br>
-          <label class="form-label">Повторите пароль:</label>
-          {{ form.password2 }}
-          <br>
-          <label class="form-label">Апи ключ:</label>
-          {{ form.first_name }}
-          <br>
-          <label class="form-label">Секретный ключ:</label>
-          {{ form.last_name }}
-          <br>
+          {{ form.as_p }}
           <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
-
 <!--          <div class="divider d-flex align-items-center my-4">-->
 <!--            <p class="text-center fw-bold mx-3 mb-0 text-muted">OR</p>-->
 <!--          </div>-->

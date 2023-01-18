@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, HttpResponse
-from .forms import UserRegisterForm, LoginForm
+from .forms import UserRegisterForm, UserLoginForm
 from binance.client import Client
 from .models import *
 from django.contrib.auth import login, logout
@@ -16,36 +16,30 @@ def welcome(request):
 def user_register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
-        print(form.is_valid())
         if form.is_valid():
             user = form.save()
             login(request, user)
             messages.success(request, 'Вы успешно зарегестрировались')
             return redirect('account')
         else:
-            print(form.errors)
             messages.error(request, 'Ошибка регистрации')
     else:
         form = UserRegisterForm()
     return render(request, 'sign_up.html', {'form': form})
 
 
-
-def signin(request):
-    error = ''
+def user_login(request):
     if request.method == 'POST':
-        login_form = LoginForm(request.POST)
-        if login_form.is_valid():
-            login_form.save()
-            return redirect('/wallet/profile')
+        form = UserLoginForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('account')
         else:
-            error = 'Form is not valid'
-    form = LoginForm()
-    context = {
-        'form': form,
-        'error': error
-    }
-    return render(request, 'sing_in.html', context)
+            messages.error(request, 'Ошибка авторизации')
+    else:
+        form = UserLoginForm()
+    return render(request, 'sing_in.html', {'form': form})
 
 
 def account_for_login(request):
