@@ -10,9 +10,7 @@ from .serializers import MyModelSerializer
 from .models import Coins
 from .forms import UserRegisterForm, UserLoginForm
 from datetime import datetime, timedelta
-
-API_B = 'uxq5ys5QYsXtzjlurz2qEXgsEd522wF6uEfntReadmjjRcC83BUrw6mIkZ1G6zx5'
-Secret_B = 'dmSOOwuzHvXcDgzi4EvhceZi48uX2eKyEPuXQQPsyudH35SQCKaGEkCFLqTVWc03'
+from .config import *
 
 
 class CoinsListView(generics.ListCreateAPIView):

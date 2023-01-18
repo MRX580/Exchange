@@ -2,3 +2,4 @@ venv
 .idea
 exchange/exchange/settings.py
 exchange/db.sqlite3
+exchange/application/config.py
