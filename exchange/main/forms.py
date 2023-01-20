@@ -1,4 +1,3 @@
-from .models import Signup, Signin
 from django.forms import ModelForm, TextInput
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
