@@ -18,4 +18,4 @@ function updateElement() {
         });
     }
 
-    setInterval(updateElement, 1000 * 2); // Call updateElement every 3 minutes
+    setInterval(updateElement, 1000 * 3); // Call updateElement every 3 minutes

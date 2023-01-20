@@ -1,5 +1,3 @@
-import random
-
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login, logout
@@ -9,7 +7,6 @@ from binance.client import Client
 from .serializers import MyModelSerializer
 from .models import Coins
 from .forms import UserRegisterForm, UserLoginForm
-from datetime import datetime, timedelta
 from .config import *
 
 
@@ -25,60 +22,35 @@ class CoinDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAdminUser,)
 
 
-class BinanceData:
-    def __init__(self, client: Client):
-        self.client = client
-
-    def divine_number(self, number_str: str, length: int = 0) -> str:
-        left_side = f'{int(number_str.split(".")[0]):,}'
-        if length >= 1:
-            right_side = number_str.split(".")[1][:length]
-            return f'{left_side}.{right_side}'
-        return left_side
-
-    def coin(self, symbol: str, length: int = 0):
-        resault = str(self.client.get_symbol_ticker(symbol=symbol)['price'])
-        return '$' + self.divine_number(resault, length)
-
-    def volume(self, symbol):
-        resault = self.client.get_ticker(symbol=symbol)['volume']
-        return self.divine_number(resault, 0)
-
-    def quoteVolume(self, symbol):
-        resault = self.client.get_ticker(symbol=symbol)['quoteVolume']
-        return '$' + self.divine_number(resault, 2)
-
-    def hours24(self, symbol):
-        resault = self.client.get_ticker(symbol=symbol)['priceChangePercent']
-        return self.divine_number(resault, 5) + '%'
+def divine_number(number_str: str, length: int = 0) -> str:
+    left_side = f'{int(number_str.split(".")[0]):,}'
+    if length >= 1:
+        right_side = number_str.split(".")[1][:length]
+        return f'{left_side}.{right_side}'
+    return left_side
 
 
 def home(request):
-    client = BinanceData(Client(API_B, Secret_B))
-    coins = ['BTC', 'ETH', 'XRP', 'ADA']
-    currency = 'USDT'
-    params = ['price', 'volume', 'full_name', 'procent_change', 'quote_volume']
-    html_tags = ['price', 'name', 'volume', 'procent_change', 'quote_volume']
-
-    data = {
-        'BTC': {'price': client.coin('BTCUSDT', 3), 'volume': client.volume('BTCUSDT'), 'full_name': 'Bitcoin BTC',
-                'procent_change': client.hours24('BTCUSDT'), 'quote_volume': client.quoteVolume('BTCUSDT'), 'html_tag':
-            {'price': 'BTC_price', 'name': 'BTC_name', 'volume': 'BTC_volume', 'procent_change': 'BTC_procent_change',
-             'quote_volume': 'BTC_quote_volume'}},
-        'ETH': {'price': client.coin('ETHUSDT', 3), 'volume': client.volume('ETHUSDT'), 'full_name': 'Etherium ETH',
-                'procent_change': client.hours24('ETHUSDT'), 'quote_volume': client.quoteVolume('ETHUSDT'), 'html_tag':
-            {'price': 'ETH_price', 'name': 'ETH_name', 'volume': 'ETH_volume', 'procent_change': 'ETH_procent_change',
-             'quote_volume': 'ETH_quote_volume'}},
-        'XRP': {'price': client.coin('XRPUSDT', 5), 'volume': client.volume('XRPUSDT'), 'full_name': 'Ripple XRP',
-                'procent_change': client.hours24('XRPUSDT'), 'quote_volume': client.quoteVolume('XRPUSDT'), 'html_tag':
-            {'price': 'XRP_price', 'name': 'XRP_name', 'volume': 'XRP_volume', 'procent_change': 'XRP_procent_change',
-             'quote_volume': 'XRP_quote_volume'}},
-        'ADA': {'price': client.coin('ADAUSDT', 5), 'volume': client.volume('ADAUSDT'), 'full_name': 'Cardano ADA',
-                'procent_change': client.hours24('ADAUSDT'), 'quote_volume': client.quoteVolume('ADAUSDT'), 'html_tag':
-                    {'price': 'ADA_price', 'name': 'ADA_name', 'volume': 'ADA_volume',
-                     'procent_change': 'ADA_procent_change',
-                     'quote_volume': 'ADA_quote_volume'}}
-    }
+    client = Client(API_B, Secret_B)
+    coins = ['BTCUSDT', 'XRPUSDT', 'ETHUSDT', 'ADAUSDT', 'BNBUSDT', 'LUNAUSDT', 'LUNCBUSD']
+    symbol_ticker = client.get_symbol_ticker()
+    get_ticker = client.get_ticker()
+    data = {}
+    for j in coins:
+        for i in symbol_ticker:
+            if i['symbol'] == j:
+                data[j] = i['price']
+    coins_len = len(coins)
+    for count in range(coins_len):
+        for i in get_ticker:
+            if i['symbol'] == coins[count]:
+                name = coins[count]
+                data[name] = {'price': '$ ' + divine_number(data[name], 3), 'full_name': name,
+                                  'volume': divine_number(i['volume']), 'procent_change': divine_number(i['priceChangePercent'], 2) + ' %',
+                                'quote_volume': divine_number(i['quoteVolume']), 'html_tag': {'price': name + 'price',
+                                                                               'name': name + 'name',
+                                  'volume': name + 'volume', 'procent_change': name + 'procent',
+                                'quote_volume': name + 'quote'}}
     if is_ajax(request=request):
         return JsonResponse(data, status=200)
     return render(request, 'application/index.html', {'coins': data})
