@@ -42,10 +42,10 @@ def activateEmail(request, user, to_email):
     })
     email = EmailMessage(mail_subject, message, to=[to_email])
     if email.send():
-        messages.success(request, f'Dear {user}, please go to you email {to_email} inbox and click on \
-            received activation link to confirm and complete the registration. Note: Check your spam folder.')
+        messages.success(request, f'Дорогой {user}, пожалуйста перейдите на вашу электронную почту {to_email} входящие и нажмите \
+             получена ссылка активации для подтверждения и завершения регистрации. Примечание: Посмотрите папку спам.')
     else:
-        messages.error(request, f'Problem sending confirmation email to {to_email}, check if you typed it correctly.')
+        messages.error(request, f'Проблема с отправкой письма с подтверждением на {to_email}, посмотрите всели вы написали коректно.')
 
 
 def activate(request, uidb64, token):
@@ -60,10 +60,10 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
 
-        messages.success(request, 'Thank you for your email confirmation. Now you can login your account.')
+        messages.success(request, 'Спасибо за ваше подтверждение почты. Сейчас можете зайти в свой аккаунт.')
         return redirect('signin')
     else:
-        messages.error(request, 'Activation link is invalid!')
+        messages.error(request, 'Ссылка не коректна!')
 
     return redirect('home')
 
