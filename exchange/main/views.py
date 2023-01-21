@@ -97,12 +97,16 @@ def account(request):
     col_vo_coins = []
     price = []
     changes = []
+    summa = []
     for i in info:
         if float(i.get('free')) > 0:
+            free = float(i.get('free'))
             name_coins.append(i.get('asset'))
             col_vo_coins.append(float(i.get('free')))
             coin = i.get('asset')
             if coin == 'USDT':
+                cost2 = float(client.get_symbol_ticker(symbol='USDTUAH').get('price')) / 40
+                summa.append(cost2 * free)
                 cost = round(float(client.get_symbol_ticker(symbol='USDTUAH').get('price')) / 40, 2)
                 price.append(str(cost) + ' $')
                 change = round(float(client.get_ticker(symbol='USDTUAH').get('priceChangePercent')), 2)
@@ -111,6 +115,8 @@ def account(request):
                 else:
                     changes.append(str(change) + ' %')
             elif coin == 'UAH':
+                cost2 = float(client.get_symbol_ticker(symbol='USDTUAH').get('price'))
+                summa.append(cost2 * free)
                 cost = round(float(client.get_symbol_ticker(symbol='USDTUAH').get('price')), 2)
                 price.append(str(cost) + ' ₴')
                 change = round(float(client.get_ticker(symbol='USDTUAH').get('priceChangePercent')), 2)
@@ -119,6 +125,8 @@ def account(request):
                 else:
                     changes.append(str(change) + ' %')
             elif coin == 'LUNC':
+                cost2 = float(client.get_symbol_ticker(symbol='LUNCBUSD').get('price'))
+                summa.append(cost2 * free)
                 cost = float(client.get_symbol_ticker(symbol='LUNCBUSD').get('price'))
                 price.append(str(cost) + ' $')
                 change = round(float(client.get_ticker(symbol='LUNCBUSD').get('priceChangePercent')), 2)
@@ -127,6 +135,8 @@ def account(request):
                 else:
                     changes.append(str(change) + ' %')
             else:
+                cost2 = float(client.get_symbol_ticker(symbol=coin + 'USDT').get('price'))
+                summa.append(cost2 * free)
                 cost = round(float(client.get_symbol_ticker(symbol=coin + 'USDT').get('price')), 2)
                 price.append(str(cost) + ' $')
                 change = round(float(client.get_ticker(symbol=coin + 'USDT').get('priceChangePercent')), 2)
@@ -134,5 +144,7 @@ def account(request):
                     changes.append('+ ' + str(change) + ' %')
                 else:
                     changes.append(str(change) + ' %')
-    return render(request, 'your_accaunt.html', {'name_coin': name_coins, 'col_vo_coin': col_vo_coins, 'price': price, 'changes': changes})
+    sum_in_usdt = round(sum(summa), 2)
+    sum_in_btc = round(sum_in_usdt / float(client.get_symbol_ticker(symbol='BTCUSDT').get('price')), 9)
+    return render(request, 'your_accaunt.html', {'name_coin': name_coins, 'col_vo_coin': col_vo_coins, 'price': price, 'changes': changes, 'sum_in_usdt': sum_in_usdt, 'sum_in_btc': sum_in_btc})
 
