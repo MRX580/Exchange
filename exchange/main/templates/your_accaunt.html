@@ -3,7 +3,6 @@
 <h1 style="text-align: center;">Общий баланс</h1>
 <p style="font-size: 30px"><b>{{ sum_in_btc }} BTC</b> ≈ ${{ sum_in_usdt }}</p>
 <br>
-<h1 style="text-align: center;">Crypto баланс</h1>
     <table class="table">
     <thead>
       <tr>
@@ -49,7 +48,11 @@
     <tbody>
       <tr>
         {% for i in changes %}
-        <td>{{ i }}</td>
+          {% if i < 0 %}
+          <td style="color: red;">{{ i }} %</td>
+          {% else %}
+          <td style="color: green ;">+ {{ i }} %</td>
+          {% endif %}
         {% endfor %}
       </tr>
     </tbody>

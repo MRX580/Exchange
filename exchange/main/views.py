@@ -12,6 +12,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
+from django.views.generic import ListView, DeleteView, CreateView
 
 
 def user_register(request):
@@ -111,9 +112,9 @@ def account(request):
                 price.append(str(cost) + ' $')
                 change = round(float(client.get_ticker(symbol='USDTUAH').get('priceChangePercent')), 2)
                 if change > 0:
-                    changes.append('+ ' + str(change) + ' %')
+                    changes.append(change)
                 else:
-                    changes.append(str(change) + ' %')
+                    changes.append(change)
             elif coin == 'UAH':
                 cost2 = float(client.get_symbol_ticker(symbol='USDTUAH').get('price'))
                 summa.append(cost2 * free)
@@ -121,9 +122,9 @@ def account(request):
                 price.append(str(cost) + ' ₴')
                 change = round(float(client.get_ticker(symbol='USDTUAH').get('priceChangePercent')), 2)
                 if change > 0:
-                    changes.append('+ ' + str(change) + ' %')
+                    changes.append(change)
                 else:
-                    changes.append(str(change) + ' %')
+                    changes.append(change)
             elif coin == 'LUNC':
                 cost2 = float(client.get_symbol_ticker(symbol='LUNCBUSD').get('price'))
                 summa.append(cost2 * free)
@@ -131,9 +132,9 @@ def account(request):
                 price.append(str(cost) + ' $')
                 change = round(float(client.get_ticker(symbol='LUNCBUSD').get('priceChangePercent')), 2)
                 if change > 0:
-                    changes.append('+ ' + str(change) + ' %')
+                    changes.append(change)
                 else:
-                    changes.append(str(change) + ' %')
+                    changes.append(change)
             else:
                 cost2 = float(client.get_symbol_ticker(symbol=coin + 'USDT').get('price'))
                 summa.append(cost2 * free)
@@ -141,9 +142,9 @@ def account(request):
                 price.append(str(cost) + ' $')
                 change = round(float(client.get_ticker(symbol=coin + 'USDT').get('priceChangePercent')), 2)
                 if change > 0:
-                    changes.append('+ ' + str(change) + ' %')
+                    changes.append(change)
                 else:
-                    changes.append(str(change) + ' %')
+                    changes.append(change)
     sum_in_usdt = round(sum(summa), 2)
     sum_in_btc = round(sum_in_usdt / float(client.get_symbol_ticker(symbol='BTCUSDT').get('price')), 9)
     return render(request, 'your_accaunt.html', {'name_coin': name_coins, 'col_vo_coin': col_vo_coins, 'price': price, 'changes': changes, 'sum_in_usdt': sum_in_usdt, 'sum_in_btc': sum_in_btc})
