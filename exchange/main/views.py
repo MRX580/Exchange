@@ -94,6 +94,8 @@ def account(request):
     secret_key_get = api.last_name
     client = Client(api_key_get, secret_key_get)
     info = client.get_account().get('balances')
+    data = {'get_symbol_ticker': client.get_symbol_ticker(),
+            'get_ticker': client.get_ticker()}
     name_coins = []
     col_vo_coins = []
     price = []
@@ -106,46 +108,64 @@ def account(request):
             col_vo_coins.append(float(i.get('free')))
             coin = i.get('asset')
             if coin == 'USDT':
-                cost2 = float(client.get_symbol_ticker(symbol='USDTUAH').get('price')) / 40
-                summa.append(cost2 * free)
-                cost = round(float(client.get_symbol_ticker(symbol='USDTUAH').get('price')) / 40, 2)
-                price.append(str(cost) + ' $')
-                change = round(float(client.get_ticker(symbol='USDTUAH').get('priceChangePercent')), 2)
-                if change > 0:
-                    changes.append(change)
-                else:
-                    changes.append(change)
+                for i in data['get_symbol_ticker']:
+                    if i['symbol'] == 'USDTUAH':
+                        cost2 = float(i['price']) / 40
+                        summa.append(cost2 * free)
+                        cost = round(float(i['price']) / 40, 2)
+                        price.append(str(cost) + ' $')
+                for i in data['get_ticker']:
+                    if i['symbol'] == 'USDTUAH':
+                        change = round(float(i['priceChangePercent']), 2)
+                        if change > 0:
+                            changes.append(change)
+                        else:
+                            changes.append(change)
             elif coin == 'UAH':
-                cost2 = float(client.get_symbol_ticker(symbol='USDTUAH').get('price'))
-                summa.append(cost2 * free)
-                cost = round(float(client.get_symbol_ticker(symbol='USDTUAH').get('price')), 2)
-                price.append(str(cost) + ' ₴')
-                change = round(float(client.get_ticker(symbol='USDTUAH').get('priceChangePercent')), 2)
-                if change > 0:
-                    changes.append(change)
-                else:
-                    changes.append(change)
+                for i in data['get_symbol_ticker']:
+                    if i['symbol'] == 'USDTUAH':
+                        cost2 = float(i['price'])
+                        summa.append(cost2 * free)
+                        cost = round(float(i['price']), 2)
+                        price.append(str(cost) + ' ₴')
+                for i in data['get_ticker']:
+                    if i['symbol'] == 'USDTUAH':
+                        change = round(float(i['priceChangePercent']), 2)
+                        if change > 0:
+                            changes.append(change)
+                        else:
+                            changes.append(change)
             elif coin == 'LUNC':
-                cost2 = float(client.get_symbol_ticker(symbol='LUNCBUSD').get('price'))
-                summa.append(cost2 * free)
-                cost = float(client.get_symbol_ticker(symbol='LUNCBUSD').get('price'))
-                price.append(str(cost) + ' $')
-                change = round(float(client.get_ticker(symbol='LUNCBUSD').get('priceChangePercent')), 2)
-                if change > 0:
-                    changes.append(change)
-                else:
-                    changes.append(change)
+                for i in data['get_symbol_ticker']:
+                    if i['symbol'] == 'LUNCBUSD':
+                        cost2 = float(i['price'])
+                        summa.append(cost2 * free)
+                        cost = float(i['price'])
+                        price.append(str(cost) + ' $')
+                for i in data['get_ticker']:
+                    if i['symbol'] == 'LUNCBUSD':
+                        change = round(float(i['priceChangePercent']), 2)
+                        if change > 0:
+                            changes.append(change)
+                        else:
+                            changes.append(change)
             else:
-                cost2 = float(client.get_symbol_ticker(symbol=coin + 'USDT').get('price'))
-                summa.append(cost2 * free)
-                cost = round(float(client.get_symbol_ticker(symbol=coin + 'USDT').get('price')), 2)
-                price.append(str(cost) + ' $')
-                change = round(float(client.get_ticker(symbol=coin + 'USDT').get('priceChangePercent')), 2)
-                if change > 0:
-                    changes.append(change)
-                else:
-                    changes.append(change)
+                for i in data['get_symbol_ticker']:
+                    if i['symbol'] == coin + 'USDT':
+                        cost2 = float(i['price'])
+                        summa.append(cost2 * free)
+                        cost = round(float(i['price']), 2)
+                        price.append(str(cost) + ' $')
+                for i in data['get_ticker']:
+                    if i['symbol'] == coin + 'USDT':
+                        change = round(float(i['priceChangePercent']), 2)
+                        if change > 0:
+                            changes.append(change)
+                        else:
+                            changes.append(change)
     sum_in_usdt = round(sum(summa), 2)
-    sum_in_btc = round(sum_in_usdt / float(client.get_symbol_ticker(symbol='BTCUSDT').get('price')), 9)
+    for i in data['get_symbol_ticker']:
+        if i['symbol'] == 'BTCUSDT':
+            sum_in_btc = round(sum_in_usdt / float(i['price']), 9)
     return render(request, 'your_accaunt.html', {'name_coin': name_coins, 'col_vo_coin': col_vo_coins, 'price': price, 'changes': changes, 'sum_in_usdt': sum_in_usdt, 'sum_in_btc': sum_in_btc})
 
