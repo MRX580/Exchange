@@ -28,3 +28,11 @@
     text-align: center;
     flex: 1;
 }
+
+body {
+    height: 100%;
+}
+
+.content {
+    min-height: calc(100vh - 129px);
+}

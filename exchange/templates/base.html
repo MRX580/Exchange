@@ -9,8 +9,10 @@
 </head>
 <body>
 <div class="wrapper">
+    <div class="content">
     {% include 'inc/_nav.html' %}
     {% block content %}CONTENT{% endblock %}
+        </div>
     {% include 'inc/_footer.html' %}
 </div>
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
