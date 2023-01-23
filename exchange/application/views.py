@@ -32,7 +32,8 @@ def divine_number(number_str: str, length: int = 0) -> str:
 
 def home(request):
     client = Client(API_B, Secret_B)
-    coins = ['BTCUSDT', 'XRPUSDT', 'ETHUSDT', 'ADAUSDT', 'BNBUSDT', 'LUNAUSDT', 'LUNCBUSD']
+    coins = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'XRPUSDT', 'BUSDUSDT', 'ADAUSDT', 'DOGEUSDT',
+             'SOLUSDT', 'MATICUSDT', 'DOTUSDT']
     symbol_ticker = client.get_symbol_ticker()
     get_ticker = client.get_ticker()
     data = {}
