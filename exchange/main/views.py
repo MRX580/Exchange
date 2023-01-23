@@ -1,18 +1,15 @@
 from django.shortcuts import render, redirect
 from .forms import UserRegisterForm, UserLoginForm
 from binance.client import Client
-from django.contrib.auth import login, logout, authenticate, get_user_model
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login, get_user_model
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
-from django.views.generic import ListView, DeleteView, CreateView
 
 
 def user_register(request):
@@ -110,8 +107,7 @@ def account(request):
             if coin == 'USDT':
                 for i in data['get_symbol_ticker']:
                     if i['symbol'] == 'USDTUAH':
-                        cost2 = float(i['price']) / 40
-                        summa.append(cost2 * free)
+                        summa.append(free / 40)
                         cost = round(float(i['price']) / 40, 2)
                         price.append(str(cost) + ' $')
                 for i in data['get_ticker']:
@@ -124,8 +120,7 @@ def account(request):
             elif coin == 'UAH':
                 for i in data['get_symbol_ticker']:
                     if i['symbol'] == 'USDTUAH':
-                        cost2 = float(i['price'])
-                        summa.append(cost2 * free)
+                        summa.append(free / 40)
                         cost = round(float(i['price']), 2)
                         price.append(str(cost) + ' ₴')
                 for i in data['get_ticker']:
@@ -167,5 +162,5 @@ def account(request):
     for i in data['get_symbol_ticker']:
         if i['symbol'] == 'BTCUSDT':
             sum_in_btc = round(sum_in_usdt / float(i['price']), 9)
-    return render(request, 'your_accaunt.html', {'name_coin': name_coins, 'col_vo_coin': col_vo_coins, 'price': price, 'changes': changes, 'sum_in_usdt': sum_in_usdt, 'sum_in_btc': sum_in_btc})
+            return render(request, 'your_accaunt.html', {'name_coin': name_coins, 'col_vo_coin': col_vo_coins, 'price': price, 'changes': changes, 'sum_in_usdt': sum_in_usdt, 'sum_in_btc': sum_in_btc})
 
