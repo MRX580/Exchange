@@ -6,5 +6,6 @@ urlpatterns = [
     path('__debug__/', include('debug_toolbar.urls')),
     path('', include('application.urls')),
     path('chart/', include('charts.urls')),
+    path('blog/', include('blog.urls')),
     path('wallet/', include('main.urls')),
 ]
