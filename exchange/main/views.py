@@ -16,11 +16,18 @@ def user_register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False
-            user.save()
-            activateEmail(request, user, form.cleaned_data.get('email'))
-            return redirect('home')
+            email = form.cleaned_data['email']
+            api_key = form.cleaned_data['first_name']
+            if User.objects.filter(email__iexact=email).exists():
+                messages.error(request, 'Такая почта уже существует!')
+            elif User.objects.filter(first_name__iexact=api_key).exists():
+                messages.error(request, 'Такой апи ключ уже существует!')
+            else:
+                user = form.save(commit=False)
+                user.is_active = False
+                user.save()
+                activateEmail(request, user, form.cleaned_data.get('email'))
+                return redirect('home')
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
@@ -81,18 +88,12 @@ def user_login(request):
 
 
 def account(request):
-    your_models = User.objects.all()
-    apis = []
-    for model in your_models:
-        apis.append(model.first_name)
-    col_vo_strock = len(apis) - 1
-    api = your_models[col_vo_strock]
-    api_key_get = api.first_name
-    secret_key_get = api.last_name
-    client = Client(api_key_get, secret_key_get)
+    your_models = User.objects.get(username=request.user.username)
+    api_key = your_models.first_name
+    secret_key = your_models.last_name
+    client = Client(api_key, secret_key)
     info = client.get_account().get('balances')
-    data = {'get_symbol_ticker': client.get_symbol_ticker(),
-            'get_ticker': client.get_ticker()}
+    data = {'get_symbol_ticker': client.get_symbol_ticker(), 'get_ticker': client.get_ticker()}
     name_coins = []
     col_vo_coins = []
     price = []
@@ -162,5 +163,7 @@ def account(request):
     for i in data['get_symbol_ticker']:
         if i['symbol'] == 'BTCUSDT':
             sum_in_btc = round(sum_in_usdt / float(i['price']), 9)
-            return render(request, 'your_accaunt.html', {'name_coin': name_coins, 'col_vo_coin': col_vo_coins, 'price': price, 'changes': changes, 'sum_in_usdt': sum_in_usdt, 'sum_in_btc': sum_in_btc})
+            return render(request, 'your_accaunt.html',
+                          {'name_coin': name_coins, 'col_vo_coin': col_vo_coins, 'price': price, 'changes': changes,
+                           'sum_in_usdt': sum_in_usdt, 'sum_in_btc': sum_in_btc})
 
