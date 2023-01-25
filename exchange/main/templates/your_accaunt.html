@@ -7,47 +7,31 @@
     <thead>
       <tr>
         <th scope="col">Name</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        {% for i in name_coin %}
+          {% for i in name_coin %}
         <td>{{ i }}</td>
         {% endfor %}
       </tr>
-    </tbody>
+    </thead>
       <thead>
       <tr>
         <th scope="col">Amount</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        {% for i in col_vo_coin %}
+           {% for i in col_vo_coin %}
         <td>{{ i }}</td>
         {% endfor %}
       </tr>
-    </tbody>
+    </thead>
       <thead>
       <tr>
         <th scope="col">Price</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        {% for i in price %}
+          {% for i in price %}
         <td>{{ i }}</td>
         {% endfor %}
       </tr>
-    </tbody>
+    </thead>
       <thead>
       <tr>
         <th scope="col">24H Change</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        {% for i in changes %}
+          {% for i in changes %}
           {% if i < 0 %}
           <td style="color: red;">{{ i }} %</td>
           {% else %}
@@ -55,6 +39,6 @@
           {% endif %}
         {% endfor %}
       </tr>
-    </tbody>
+    </thead>
   </table>
 {% endblock %}
