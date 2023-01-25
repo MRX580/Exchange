@@ -36,3 +36,18 @@ body {
 .content {
     min-height: calc(100vh - 129px);
 }
+
+.footer {
+    margin: 50px 0px 0px 0px;
+}
+
+.blog-card {
+    max-width: 600px;
+    margin: auto;
+    width: 50%;
+    border: 1px solid black;
+}
+
+a {
+  text-decoration: none;
+}
