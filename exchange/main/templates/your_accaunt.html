@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<a style="color: black;" href="{% url 'history_spot' %}">История сделок</a>
 <h1 style="text-align: center;">Общий баланс</h1>
 <p style="font-size: 30px"><b>{{ sum_in_btc }} BTC</b> ≈ ${{ sum_in_usdt }}</p>
 <br>

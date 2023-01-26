@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block content %}
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Pair</th>
+      <th scope="col">Side</th>
+      <th scope="col">Price</th>
+      <th scope="col">Amount</th>
+      <th scope="col"> Total</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for i in info %}
+    <tr>
+      <td>{{ i.symbol }}</td>
+      <td>{{ i.side }}</td>
+      <td>{{ i.price }}</td>
+      <td>{{ i.origQty }}</td>
+      <td>{{ i.cummulativeQuoteQty }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<!--<table class="table">-->
+<!--    <thead>-->
+<!--      <tr>-->
+<!--        <th scope="col">Pair</th>-->
+<!--          {% for i in all %}-->
+<!--        <td>{{ i.name_coin }}</td>-->
+<!--        {% endfor %}-->
+<!--      </tr>-->
+<!--    </thead>-->
+<!--      <thead>-->
+<!--      <tr>-->
+<!--        <th scope="col">Side</th>-->
+<!--           {% for i in col_vo_coin %}-->
+<!--        <td>{{ i }}</td>-->
+<!--        {% endfor %}-->
+<!--      </tr>-->
+<!--    </thead>-->
+<!--      <thead>-->
+<!--      <tr>-->
+<!--        <th scope="col">Price</th>-->
+<!--          {% for i in price %}-->
+<!--        <td>{{ i }}</td>-->
+<!--        {% endfor %}-->
+<!--      </tr>-->
+<!--    </thead>-->
+<!--      <thead>-->
+<!--      <tr>-->
+<!--        <th scope="col">Amount</th>-->
+<!--          {% for i in changes %}-->
+<!--          {% if i < 0 %}-->
+<!--          <td style="color: red;">{{ i }} %</td>-->
+<!--          {% else %}-->
+<!--          <td style="color: green ;">+ {{ i }} %</td>-->
+<!--          {% endif %}-->
+<!--        {% endfor %}-->
+<!--      </tr>-->
+<!--      <tr>-->
+<!--        <th scope="col">Total</th>-->
+<!--          {% for i in price %}-->
+<!--        <td>{{ i }}</td>-->
+<!--        {% endfor %}-->
+<!--      </tr>-->
+<!--    </thead>-->
+<!--  </table>-->
+{% endblock %}

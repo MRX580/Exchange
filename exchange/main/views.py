@@ -167,3 +167,12 @@ def account(request):
                           {'name_coin': name_coins, 'col_vo_coin': col_vo_coins, 'price': price, 'changes': changes,
                            'sum_in_usdt': sum_in_usdt, 'sum_in_btc': sum_in_btc})
 
+
+def history_spot(request):
+    your_models = User.objects.get(username=request.user.username)
+    api_key = your_models.first_name
+    secret_key = your_models.last_name
+    client = Client(api_key, secret_key)
+    info = client.get_all_orders(symbol='USDTUAH')
+    return render(request, 'history_spot.html', {'info': info})
+
