@@ -7,9 +7,9 @@
         <img src="https://img.netzwelt.de/dw1200_dh900_sw1580_sh1185_sx210_sy0_sr4x3_nu0/picture/original/2019/10/blog-261335.jpeg"
              class="card-img-top" alt="..." height="350">
         <div class="card-body">
-            <h5 class="card-title">Первый влог!</h5>
-            <p class="card-text">Что сделано и готово на данный момент, и что планируем делать дальше?</p>
-            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+            <h5 class="card-title">{{ i.title }}</h5>
+            <p class="card-text">{{ i.content|truncatechars:50 }}</p>
+            <p class="card-text"><small class="text-muted">Last updated {{ i.updated_at }}</small></p>
         </div>
     </div>
 </a>

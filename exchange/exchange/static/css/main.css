@@ -51,3 +51,8 @@ body {
 a {
   text-decoration: none;
 }
+
+.create_blog {
+    max-width: 700px;
+    margin: auto;
+}
