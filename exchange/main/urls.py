@@ -9,5 +9,6 @@ urlpatterns = [
     path('signin/', user_login, name='signin'),
     path('exit/', authViews.LogoutView.as_view(next_page='home'), name='exit'),
     path('activate/<uidb64>/<token>', views.activate, name='activate'),
-    path('history_trade_spot/', history_spot, name='history_spot')
+    path('history_trade_spot/', history_spot, name='history_spot'),
+    path('enter/', name_coin, name='enter')
 ]

@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-from .forms import UserRegisterForm, UserLoginForm
+from .forms import UserRegisterForm, UserLoginForm, NameCoinForm
+from .models import NameCoin
 from binance.client import Client
 from django.contrib.auth import login, get_user_model
 from django.contrib.auth.models import User
@@ -168,11 +169,39 @@ def account(request):
                            'sum_in_usdt': sum_in_usdt, 'sum_in_btc': sum_in_btc})
 
 
+def name_coin(request):
+    if request.method == 'POST':
+        form = NameCoinForm(request.POST)
+        if form.is_valid():
+            name = form.save()
+            name.save()
+            return redirect('history_spot')
+        else:
+            for error in list(form.errors.values()):
+                messages.error(request, error)
+    else:
+        form = NameCoinForm()
+    return render(request, 'enter_name_coin.html', {'form': form})
+
+
 def history_spot(request):
+    if request.method == 'POST':
+        form = NameCoinForm(request.POST)
+        if form.is_valid():
+            name = form.save()
+            name.save()
+            return redirect('history_spot')
+        else:
+            for error in list(form.errors.values()):
+                messages.error(request, error)
+    else:
+        form = NameCoinForm()
     your_models = User.objects.get(username=request.user.username)
     api_key = your_models.first_name
     secret_key = your_models.last_name
     client = Client(api_key, secret_key)
-    info = client.get_all_orders(symbol='USDTUAH')
-    return render(request, 'history_spot.html', {'info': info})
+    name_coin_models = NameCoin.objects.all()
+    for name_cois in name_coin_models:
+        info = client.get_all_orders(symbol=name_cois.name_coin)
+    return render(request, 'history_spot.html', {'info': info, 'form': form})
 
