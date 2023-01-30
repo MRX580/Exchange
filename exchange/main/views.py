@@ -206,16 +206,10 @@ def history_spot(request):
     for i in all:
         if i.choice_status == 'All':
             info = client.get_all_orders(symbol=i.name_coin)
-        elif i.choice_status == 'FILLED':
-            print('fasdsad')
-            a = client.get_all_orders(symbol=i.name_coin)
-            for j in a:
+        elif i.choice_status == 'Filled':
+            for j in client.get_all_orders(symbol=i.name_coin):
+                print(j)
                 if j.status == 'FILLED':
-                    print(j)
-        # else:
-        #     a = client.get_all_orders(symbol=i.name_coin)
-        #     for g in a:
-        #         if g.status == 'CANCELED':
-        #             info = client.get_all_orders(symbol=i.name_coin)
-        return render(request, 'history_spot.html', {'info': info, 'form': form})
+                    info = j
+    return render(request, 'history_spot.html', {'info': info, 'form': form, 'all': all})
 
