@@ -43,19 +43,25 @@ class UserLoginForm(AuthenticationForm):
     password = forms.CharField(label="Пароль:", widget=forms.PasswordInput(attrs={"class": 'form-control'}))
 
 
-class NameCoinForm(ModelForm):
-    class Meta:
-        model = NameCoin
-        fields = ['name_coin']
-        widgets = {
-            'name_coin': forms.TextInput(attrs={
-                'type': "search",
-                'placeholder': "Name coin",
-                'aria-label': "Search",
-                'size': "20",
-                'style': "border-radius: 3px;"
-            }),
-        }
+class NameCoinForm(forms.Form):
+    CHOICES = (('All', 'All'), ('Filled', 'Filled'), ('Canceled', 'Canceled'))
+    name_coin = forms.CharField(widget=forms.TextInput(attrs={
+        'placeholder': "Name coin",
+        'size': "20",
+        'style': "border-radius: 3px;"}))
+    choice_status = forms.ChoiceField(choices=CHOICES)
+    # class Meta:
+    #     model = NameCoin
+    #     CHOICES = (('All', 'All'), ('Filled', 'Filled'), ('Canceled', 'Canceled'))
+    #     fields = ['name_coin', 'choice_status']
+    #     widgets = {
+    #         'name_coin': forms.TextInput(attrs={
+    #             'placeholder': "Name coin",
+    #             'size': "20",
+    #             'style': "border-radius: 3px;"
+    #         }),
+    #         'choice_status': forms.ChoiceField(hoices=CHOICES)
+    #     }
 
 
 

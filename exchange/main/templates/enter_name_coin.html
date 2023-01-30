@@ -2,7 +2,8 @@
 {% block content %}
 <form role="search" method="post">
   {% csrf_token %}
-{{ form.name_coin }}
+{{ form.name_coin }} {{ form.choice_status }} <button type="submit" class="btn btn-dark">Найти</button>
+</form>
 <table class="table table-hover">
   <thead>
     <tr>
