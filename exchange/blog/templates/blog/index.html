@@ -4,7 +4,7 @@
 {% for i in data_blog %}
 <a href="{{ i.get_absolute_url }}">
     <div class="card mb-3 blog-card text-center ">
-        <img src="https://img.netzwelt.de/dw1200_dh900_sw1580_sh1185_sx210_sy0_sr4x3_nu0/picture/original/2019/10/blog-261335.jpeg"
+        <img src="{{ i.img_path.url }}"
              class="card-img-top" alt="..." height="350">
         <div class="card-body">
             <h5 class="card-title">{{ i.title }}</h5>
