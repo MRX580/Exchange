@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import UserRegisterForm, UserLoginForm, NameCoinForm
-from .models import NameCoin
+from .models import FilterModel
 from binance.client import Client
 from django.contrib.auth import login, get_user_model
 from django.contrib.auth.models import User
@@ -173,8 +173,9 @@ def name_coin(request):
     if request.method == 'POST':
         form = NameCoinForm(request.POST)
         if form.is_valid():
-            name = form.save()
-            name.save()
+            name_coin = form.cleaned_data['name_coin']
+            choice_status = form.cleaned_data['choice_status']
+            FilterModel.objects.create(name_coin=name_coin, choice_status=choice_status)
             return redirect('history_spot')
         else:
             for error in list(form.errors.values()):
@@ -188,8 +189,9 @@ def history_spot(request):
     if request.method == 'POST':
         form = NameCoinForm(request.POST)
         if form.is_valid():
-            name = form.save()
-            name.save()
+            name_coin = form.cleaned_data['name_coin']
+            choice_status = form.cleaned_data['choice_status']
+            FilterModel.objects.create(name_coin=name_coin, choice_status=choice_status)
             return redirect('history_spot')
         else:
             for error in list(form.errors.values()):
@@ -200,8 +202,20 @@ def history_spot(request):
     api_key = your_models.first_name
     secret_key = your_models.last_name
     client = Client(api_key, secret_key)
-    name_coin_models = NameCoin.objects.all()
-    for name_cois in name_coin_models:
-        info = client.get_all_orders(symbol=name_cois.name_coin)
-    return render(request, 'history_spot.html', {'info': info, 'form': form})
+    all = FilterModel.objects.all()
+    for i in all:
+        if i.choice_status == 'All':
+            info = client.get_all_orders(symbol=i.name_coin)
+        elif i.choice_status == 'FILLED':
+            print('fasdsad')
+            a = client.get_all_orders(symbol=i.name_coin)
+            for j in a:
+                if j.status == 'FILLED':
+                    print(j)
+        # else:
+        #     a = client.get_all_orders(symbol=i.name_coin)
+        #     for g in a:
+        #         if g.status == 'CANCELED':
+        #             info = client.get_all_orders(symbol=i.name_coin)
+        return render(request, 'history_spot.html', {'info': info, 'form': form})
 
