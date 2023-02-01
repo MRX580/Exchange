@@ -203,20 +203,20 @@ def history_spot(request):
     secret_key = your_models.last_name
     client = Client(api_key, secret_key)
     all = FilterModel.objects.all()
-    for i in all:
-        if i.choice_status == 'All':
-            info = client.get_all_orders(symbol=i.name_coin)
-        elif i.choice_status == 'Filled':
-            inf = client.get_all_orders(symbol=i.name_coin)
-            info = []
-            for j in inf:
-                if j['status'] == 'FILLED':
-                    info.append(j)
-        elif i.choice_status == 'Canceled':
-            inf = client.get_all_orders(symbol=i.name_coin)
-            info = []
-            for j in inf:
-                if j['status'] == 'CANCELED':
-                    info.append(j)
+    info = []
+    if all.last().choice_status == 'All':
+        inf = client.get_all_orders(symbol=all.last().name_coin)
+        for j in inf:
+            info.append(j)
+    elif all.last().choice_status == 'Filled':
+        inf = client.get_all_orders(symbol=all.last().name_coin)
+        for j in inf:
+            if j['status'] == 'FILLED':
+                info.append(j)
+    elif all.last().choice_status == 'Canceled':
+        inf = client.get_all_orders(symbol=all.last().name_coin)
+        for j in inf:
+            if j['status'] == 'CANCELED':
+                info.append(j)
     return render(request, 'history_spot.html', {'info': info, 'form': form})
 
