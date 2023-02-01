@@ -47,20 +47,10 @@ class NameCoinForm(forms.Form):
     name_coin = forms.CharField(widget=forms.TextInput(attrs={
         'placeholder': "Name coin",
         'size': "20",
-        'style': "border-radius: 3px;"}))
-    choice_status = forms.ChoiceField(choices=CHOICES)
-    # class Meta:
-    #     model = NameCoin
-    #     CHOICES = (('All', 'All'), ('Filled', 'Filled'), ('Canceled', 'Canceled'))
-    #     fields = ['name_coin', 'choice_status']
-    #     widgets = {
-    #         'name_coin': forms.TextInput(attrs={
-    #             'placeholder': "Name coin",
-    #             'size': "20",
-    #             'style': "border-radius: 3px;"
-    #         }),
-    #         'choice_status': forms.ChoiceField(hoices=CHOICES)
-    #     }
+        'style': "border-radius: 4px;"}))
+    choice_status = forms.ChoiceField(widget=forms.Select(attrs={
+       'style': "border-radius: 4px;",
+    }), choices=CHOICES)
 
 
 
