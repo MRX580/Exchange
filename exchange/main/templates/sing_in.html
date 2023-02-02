@@ -22,7 +22,6 @@
         <form method="post">
           {% csrf_token %}
           {{ form.as_p }}
-          <a href="{% url 'signup' %}">Создать аккаунт</a><br><br>
           <button type="submit" class="btn btn-primary btn-block">Вход</button>
 
 <!--          <div class="divider d-flex align-items-center my-4">-->
