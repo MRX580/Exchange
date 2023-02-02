@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Blog
 from .forms import BlogForm
 from django.contrib import messages
@@ -12,7 +12,21 @@ def index(request):
 
 def blog(request, pk):
     get_blog = Blog.objects.get(pk=pk)
-    return render(request, 'blog/blog.html', {'data_blog': get_blog})
+    last_five_blogs = Blog.objects.all()[:5]
+    last_five_blogs_reverse = reversed(last_five_blogs)
+    return render(request, 'blog/blog.html', {'data_blog': get_blog, 'last_five_blogs': last_five_blogs_reverse})
+
+
+def edit_blog(request, pk):
+    get_blog = Blog.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = BlogForm(request.POST, instance=get_blog)
+        if form.is_valid():
+            form.save()
+            return redirect('blog', pk=get_blog.pk)
+    else:
+        form = BlogForm(instance=get_blog)
+    return render(request, 'blog/create_blog.html', {'form': form})
 
 
 def create_blog(request):

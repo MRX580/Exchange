@@ -58,7 +58,25 @@ a {
 }
 
 .img_blog_content {
+        max-width: 80%;
+}
+
+.container_img {
     display: flex;
     justify-content: center;
-  align-items: center;
+    align-items: center;
+}
+
+.card-img-top {
+    max-height: 350px;
+    width: 100%;
+}
+
+.last_card {
+    width: 100%;
+    border: 1px solid black;
+    margin: 10px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
