@@ -95,78 +95,76 @@ def account(request):
     client = Client(api_key, secret_key)
     info = client.get_account().get('balances')
     data = {'get_symbol_ticker': client.get_symbol_ticker(), 'get_ticker': client.get_ticker()}
-    name_coins = []
-    col_vo_coins = []
-    price = []
-    changes = []
-    summa = []
+    all = []
+    all_dict = {}
     for i in info:
         if float(i.get('free')) > 0:
             free = float(i.get('free'))
-            name_coins.append(i.get('asset'))
-            col_vo_coins.append(float(i.get('free')))
+            all_dict['name_coin'] = i.get('asset')
+            all.append(all_dict)
+            all_dict['amount'] = float(i.get('free'))
+            all.append(all_dict)
             coin = i.get('asset')
             if coin == 'USDT':
                 for i in data['get_symbol_ticker']:
                     if i['symbol'] == 'USDTUAH':
-                        summa.append(free / 40)
+                        all_dict['summa'] = (free / 40)
                         cost = round(float(i['price']) / 40, 2)
-                        price.append(str(cost) + ' $')
+                        all_dict['price'] = (str(cost) + ' $')
                 for i in data['get_ticker']:
                     if i['symbol'] == 'USDTUAH':
                         change = round(float(i['priceChangePercent']), 2)
                         if change > 0:
-                            changes.append(change)
+                            all_dict['changes'] = change
                         else:
-                            changes.append(change)
-            elif coin == 'UAH':
-                for i in data['get_symbol_ticker']:
-                    if i['symbol'] == 'USDTUAH':
-                        summa.append(free / 40)
-                        cost = round(float(i['price']), 2)
-                        price.append(str(cost) + ' ₴')
-                for i in data['get_ticker']:
-                    if i['symbol'] == 'USDTUAH':
-                        change = round(float(i['priceChangePercent']), 2)
-                        if change > 0:
-                            changes.append(change)
-                        else:
-                            changes.append(change)
+                            all_dict['changes'] = change
             elif coin == 'LUNC':
                 for i in data['get_symbol_ticker']:
                     if i['symbol'] == 'LUNCBUSD':
                         cost2 = float(i['price'])
-                        summa.append(cost2 * free)
+                        all_dict['summa'] = (cost2 * free)
                         cost = float(i['price'])
-                        price.append(str(cost) + ' $')
+                        all_dict['price'] = (str(cost) + ' $')
                 for i in data['get_ticker']:
                     if i['symbol'] == 'LUNCBUSD':
                         change = round(float(i['priceChangePercent']), 2)
                         if change > 0:
-                            changes.append(change)
+                            all_dict['changes'] = change
                         else:
-                            changes.append(change)
+                            all_dict['changes'] = change
+            elif coin == 'UAH':
+                for i in data['get_symbol_ticker']:
+                    if i['symbol'] == 'USDTUAH':
+                        all_dict['summa'] = (free / 40)
+                        cost = round(float(i['price']), 2)
+                        all_dict['price'] = (str(cost) + ' ₴')
+                for i in data['get_ticker']:
+                    if i['symbol'] == 'USDTUAH':
+                        change = round(float(i['priceChangePercent']), 2)
+                        if change > 0:
+                            all_dict['changes'] = change
+                        else:
+                            all_dict['changes'] = change
             else:
                 for i in data['get_symbol_ticker']:
                     if i['symbol'] == coin + 'USDT':
                         cost2 = float(i['price'])
-                        summa.append(cost2 * free)
+                        all_dict['summa'] = (cost2 * free)
                         cost = round(float(i['price']), 2)
-                        price.append(str(cost) + ' $')
+                        all_dict['price'] = (str(cost) + ' $')
                 for i in data['get_ticker']:
                     if i['symbol'] == coin + 'USDT':
                         change = round(float(i['priceChangePercent']), 2)
                         if change > 0:
-                            changes.append(change)
+                            all_dict['changes'] = change
                         else:
-                            changes.append(change)
+                            all_dict['changes'] = change
+    print(all)
     sum_in_usdt = round(sum(summa), 2)
     for i in data['get_symbol_ticker']:
         if i['symbol'] == 'BTCUSDT':
             sum_in_btc = round(sum_in_usdt / float(i['price']), 9)
-            return render(request, 'your_accaunt.html',
-                          {'name_coin': name_coins, 'col_vo_coin': col_vo_coins, 'price': price, 'changes': changes,
-                           'sum_in_usdt': sum_in_usdt, 'sum_in_btc': sum_in_btc})
+            return render(request, 'your_accaunt.html', {'info': all, 'sum_in_usdt': sum_in_usdt, 'sum_in_btc': sum_in_btc})
 
 
 def name_coin(request):
@@ -204,17 +202,15 @@ def history_spot(request):
     client = Client(api_key, secret_key)
     all = FilterModel.objects.all()
     info = []
+    inf = client.get_all_orders(symbol=all.last().name_coin)
     if all.last().choice_status == 'All':
-        inf = client.get_all_orders(symbol=all.last().name_coin)
         for j in inf:
             info.append(j)
     elif all.last().choice_status == 'Filled':
-        inf = client.get_all_orders(symbol=all.last().name_coin)
         for j in inf:
             if j['status'] == 'FILLED':
                 info.append(j)
     elif all.last().choice_status == 'Canceled':
-        inf = client.get_all_orders(symbol=all.last().name_coin)
         for j in inf:
             if j['status'] == 'CANCELED':
                 info.append(j)
