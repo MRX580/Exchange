@@ -20,7 +20,7 @@ def blog(request, pk):
 def edit_blog(request, pk):
     get_blog = Blog.objects.get(pk=pk)
     if request.method == 'POST':
-        form = BlogForm(request.POST, instance=get_blog)
+        form = BlogForm(request.POST, request.FILES, instance=get_blog)
         if form.is_valid():
             form.save()
             return redirect('blog', pk=get_blog.pk)
