@@ -4,3 +4,8 @@ exchange/exchange/settings.py
 exchange/db.sqlite3
 exchange/application/config.py
 exchange/media
+exchange/application/__pycache__
+exchange/blog/__pycache__
+exchange/charts/__pycache__
+exchange/exchange/__pycache__
+exchange/main/__pycache__
