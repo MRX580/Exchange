@@ -109,7 +109,7 @@ def account(request):
             if coin == 'USDT':
                 for i in data['get_symbol_ticker']:
                     if i['symbol'] == 'USDTUAH':
-                        summa.append(free / 40)
+                        summa.append(free)
                         cost = round(float(i['price']) / 40, 2)
                         price.append(str(cost) + ' $')
                 for i in data['get_ticker']:
