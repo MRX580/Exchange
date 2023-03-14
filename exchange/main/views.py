@@ -220,7 +220,15 @@ def history_spot(request):
     return render(request, 'history_spot.html', {'info': info, 'form': form})
 
 
+def divine_number(number_str: str, length: int = 0) -> str:
+    left_side = f'{int(number_str.split(".")[0]):,}'
+    if length >= 1:
+        right_side = number_str.split(".")[1][:length]
+        return f'{left_side}.{right_side}'
+    return left_side
+
+
 def spot(request):
     client = Client(api, secret)
     info = client.get_ticker(symbol='BTCUSDT')
-    return render(request, 'spot_trade.html', {'symbol': info['symbol'], 'price': round(float(info['lastPrice']), 4), 'change': round(float(info['priceChangePercent']), 2)})
+    return render(request, 'spot_trade.html', {'symbol': info['symbol'], 'price': divine_number(info['lastPrice']), 'change': round(float(info['priceChangePercent']), 2)})
