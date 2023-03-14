@@ -230,5 +230,6 @@ def divine_number(number_str: str, length: int = 0) -> str:
 
 def spot(request):
     client = Client(api, secret)
-    info = client.get_ticker(symbol='BTCUSDT')
-    return render(request, 'spot_trade.html', {'symbol': info['symbol'], 'price': divine_number(info['lastPrice']), 'change': round(float(info['priceChangePercent']), 2)})
+    info = client.get_ticker(symbol='ETHUSDT')
+    asset = client.get_symbol_info(symbol='ETHUSDT')
+    return render(request, 'spot_trade.html', {'symbol': info['symbol'], 'price': divine_number(info['lastPrice']), 'change': round(float(info['priceChangePercent']), 2), 'asset': asset['baseAsset']})

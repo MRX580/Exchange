@@ -1,28 +1,63 @@
 {% extends 'base.html' %}
 {% block content %}
 <style>
-    .container {
-      width: 860px;
-      margin: 0 auto;
+    .form-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
     }
 
-    .navbar {
-      height: 50px;
-      background-color: white;
+    .form-container {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      padding: 0 20px;
+      width: 80%;
     }
 
-    .chart-container {
-      height: 10px;
+    form {
+      width: 45%;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+    }
+
+    h2 {
+        margin-top: 0;
+        margin-bottom: 15px;
     }
 </style>
 <div class="container">
   <nav class="navbar">
     <div class="navbar-brand">
-      <span style="color: black;">{{ symbol }}</span>
+      <span>{{ symbol }}</span>
     </div>
     <div class="navbar-price">
       ${{ price }}
@@ -36,29 +71,60 @@
     </div>
   </nav>
   <div class="chart-container">
-    <div id="tradingview-widget-container">
-      <div id="tradingview_12345"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script type="text/javascript">
+          new TradingView.widget(
+            {
+              "width": 800,
+              "height": 600,
+              "symbol": "BINANCE:{{ symbol }}",
+              "interval": "D",
+              "timezone": "Etc/UTC",
+              "theme": "light",
+              "style": "1",
+              "locale": "ru",
+              "toolbar_bg": "#f1f3f6",
+              "enable_publishing": false,
+              "allow_symbol_change": true,
+              "container_id": "tradingview_9d57b"
+            }
+          );
+    </script>
+    <div id="tradingview_9d57b"></div>
+  </div>
+  <div class="form-wrapper">
+    <div class="form-container">
+      <form class="buy-form">
+        <div class="form-group">
+          <label for="buy-price">Price (USDT)</label>
+          <input type="text" id="buy-price" name="buy-price">
+        </div>
+        <div class="form-group">
+          <label for="buy-amount">Amount ({{ asset }})</label>
+          <input type="text" id="buy-amount" name="buy-amount">
+        </div>
+        <div class="form-group">
+          <label for="buy-total">Total (USDT)</label>
+          <input type="text" id="buy-total" name="buy-total" readonly>
+        </div>
+        <button type="submit" class="btn btn-success">Buy {{ asset }}</button>
+      </form>
+      <form class="sell-form">
+        <div class="form-group">
+          <label for="sell-price">Price (USDT)</label>
+          <input type="text" id="sell-price" name="sell-price">
+        </div>
+        <div class="form-group">
+          <label for="sell-amount">Amount ({{ asset }})</label>
+          <input type="text" id="sell-amount" name="sell-amount">
+        </div>
+        <div class="form-group">
+          <label for="sell-total">Total (USDT)</label>
+          <input type="text" id="sell-total" name="sell-total" readonly>
+        </div>
+        <button type="submit" class="btn btn-danger">Sell {{ asset }}</button>
+      </form>
     </div>
   </div>
 </div>
-<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <script type="text/javascript">
-      new TradingView.widget(
-        {
-          "width": 800,
-          "height": 600,
-          "symbol": "BINANCE:{{ symbol }}",
-          "interval": "D",
-          "timezone": "Etc/UTC",
-          "theme": "light",
-          "style": "1",
-          "locale": "ru",
-          "toolbar_bg": "#f1f3f6",
-          "enable_publishing": false,
-          "allow_symbol_change": true,
-          "container_id": "tradingview_9d57b"
-        }
-      );
-    </script>
-    <div id="tradingview_9d57b"></div>
 {% endblock %}
