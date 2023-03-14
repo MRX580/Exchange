@@ -218,3 +218,8 @@ def history_spot(request):
                 info.append(j)
     return render(request, 'history_spot.html', {'info': info, 'form': form})
 
+
+def spot(request):
+    client = Client('PkiAUM3I9ao3pWwufBUzJ1KLdldheOcSeqDKmwYsccQJ90SjPz0Vfh2dUZByotWt', 'Th6mKsg7xHsBAu48tM7wkSvTl91R3wRo4aeXgDs6RhJZsqXhaaBqwNKuqCJeedzM')
+    info = client.get_ticker(symbol='BTCUSDT')
+    return render(request, 'spot_trade.html', {'symbol': info['symbol'], 'price': round(float(info['lastPrice']), 4), 'change': round(float(info['priceChangePercent']), 2)})
