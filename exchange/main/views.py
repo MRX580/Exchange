@@ -11,6 +11,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
+from .config import api, secret
 
 
 def user_register(request):
@@ -220,6 +221,6 @@ def history_spot(request):
 
 
 def spot(request):
-    client = Client('PkiAUM3I9ao3pWwufBUzJ1KLdldheOcSeqDKmwYsccQJ90SjPz0Vfh2dUZByotWt', 'Th6mKsg7xHsBAu48tM7wkSvTl91R3wRo4aeXgDs6RhJZsqXhaaBqwNKuqCJeedzM')
+    client = Client(api, secret)
     info = client.get_ticker(symbol='BTCUSDT')
     return render(request, 'spot_trade.html', {'symbol': info['symbol'], 'price': round(float(info['lastPrice']), 4), 'change': round(float(info['priceChangePercent']), 2)})
