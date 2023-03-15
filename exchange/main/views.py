@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .forms import UserRegisterForm, UserLoginForm, NameCoinForm
-from .models import FilterModel
+from .forms import UserRegisterForm, UserLoginForm, NameCoinForm, SearchCoinForm
+from .models import FilterModel, SearchCoinModel
 from binance.client import Client
 from django.contrib.auth import login, get_user_model
 from django.contrib.auth.models import User
@@ -229,7 +229,37 @@ def divine_number(number_str: str, length: int = 0) -> str:
 
 
 def spot(request):
+    if request.method == 'POST':
+        form = SearchCoinForm(request.POST)
+        if form.is_valid():
+            name_coin = form.cleaned_data['name_coin']
+            SearchCoinModel.objects.create(name_coin=name_coin)
+            return redirect('spot_coin')
+        else:
+            for error in list(form.errors.values()):
+                messages.error(request, error)
+    else:
+        form = SearchCoinForm()
     client = Client(api, secret)
-    info = client.get_ticker(symbol='ETHUSDT')
-    asset = client.get_symbol_info(symbol='ETHUSDT')
-    return render(request, 'spot_trade.html', {'symbol': info['symbol'], 'price': divine_number(info['lastPrice']), 'change': round(float(info['priceChangePercent']), 2), 'asset': asset['baseAsset']})
+    info = client.get_ticker(symbol='BTCUSDT')
+    asset = client.get_symbol_info(symbol='BTCUSDT')
+    return render(request, 'spot_trade.html', {'symbol': info['symbol'], 'price': divine_number(info['lastPrice'], 4), 'change': round(float(info['priceChangePercent']), 2), 'asset': asset['baseAsset'], 'form': form})
+
+
+def spot_coin(request):
+    if request.method == 'POST':
+        form = SearchCoinForm(request.POST)
+        if form.is_valid():
+            name_coin = form.cleaned_data['name_coin']
+            SearchCoinModel.objects.create(name_coin=name_coin)
+            return redirect('spot_coin')
+        else:
+            for error in list(form.errors.values()):
+                messages.error(request, error)
+    else:
+        form = SearchCoinForm()
+    client = Client(api, secret)
+    name = SearchCoinModel.objects.all()
+    info = client.get_ticker(symbol=name.last().name_coin)
+    asset = client.get_symbol_info(symbol=name.last().name_coin)
+    return render(request, 'spot_trade.html', {'symbol': info['symbol'], 'price': divine_number(info['lastPrice'], 4), 'change': round(float(info['priceChangePercent']), 2), 'asset': asset['baseAsset'], 'form': form})

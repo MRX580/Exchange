@@ -53,4 +53,10 @@ class NameCoinForm(forms.Form):
     }), choices=CHOICES)
 
 
+class SearchCoinForm(forms.Form):
+    name_coin = forms.CharField(widget=forms.TextInput(attrs={
+        'placeholder': 'Search',
+        'type': 'text'
+    }))
+
 

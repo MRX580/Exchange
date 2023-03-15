@@ -11,5 +11,6 @@ urlpatterns = [
     path('activate/<uidb64>/<token>', views.activate, name='activate'),
     path('history_trade_spot/', history_spot, name='history_spot'),
     path('enter/', name_coin, name='enter'),
-    path('spot/', spot, name='spot')
+    path('spot/', spot, name='spot'),
+    path('spot_coin/', spot_coin, name='spot_coin')
 ]
