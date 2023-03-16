@@ -243,8 +243,8 @@ def get_price_change(request):
 
 
 def spot(request):
+    name = 'BTCUSDT'
     if request.method == 'POST':
-        SearchCoinModel.objects.create(name_coin='BTCUSDT')
         form = SearchCoinForm(request.POST)
         if form.is_valid():
             name_coin = form.cleaned_data['name_coin']
@@ -259,8 +259,8 @@ def spot(request):
     api_key = your_models.first_name
     secret_key = your_models.last_name
     client = Client(api_key, secret_key)
-    info = client.get_ticker(symbol='BTCUSDT')
-    asset = client.get_symbol_info(symbol='BTCUSDT')
+    info = client.get_ticker(symbol=name)
+    asset = client.get_symbol_info(symbol=name)
     asset_balance_currency = client.get_asset_balance(asset=asset['quoteAsset'])
     asset_balance_coin = client.get_asset_balance(asset=asset['baseAsset'])
     return render(request, 'spot_trade.html', {'symbol': info['symbol'], 'price': divine_number(info['lastPrice'], 4),

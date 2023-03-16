@@ -37,3 +37,12 @@ class UserRegisterForm(UserCreationForm):
         if not re.match(r'[a-zA-Z0-9-_]', username):  # проверка на то что бы 1 символ не был цифрой
             raise ValidationError('Имя пользователя может состоять из латиницы, цыфр, и специальных символов -,_')
         return username
+
+
+class SearchMainPageForm(forms.Form):
+    name_coin = forms.CharField(widget=forms.TextInput(attrs={
+        'placeholder': 'Search...',
+        'type': 'search',
+        'class': 'form-control form-control-dark text-bg-dark',
+        'aria_label': 'Search'
+    }))

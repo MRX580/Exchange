@@ -6,8 +6,9 @@ from rest_framework import generics, permissions
 from binance.client import Client
 from .serializers import MyModelSerializer
 from .models import Coins
-from .forms import UserRegisterForm, UserLoginForm
+from .forms import UserRegisterForm, UserLoginForm, SearchMainPageForm
 from .config import *
+from main.models import SearchCoinModel
 
 
 class CoinsListView(generics.ListCreateAPIView):
@@ -54,7 +55,18 @@ def home(request):
                                 'quote_volume': name + 'quote'}}
     if is_ajax(request=request):
         return JsonResponse(data, status=200)
-    return render(request, 'application/index.html', {'coins': data})
+    if request.method == 'POST':
+        form = SearchMainPageForm(request.POST)
+        if form.is_valid():
+            name_coin = form.cleaned_data['name_coin']
+            SearchCoinModel.objects.create(name_coin=name_coin)
+            return redirect('spot_coin')
+        else:
+            for error in list(form.errors.values()):
+                messages.error(request, error)
+    else:
+        form = SearchMainPageForm()
+    return render(request, 'application/index.html', {'coins': data, 'form': form})
 
 
 def user_logout(request):
