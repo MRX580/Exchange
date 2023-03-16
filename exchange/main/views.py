@@ -11,7 +11,6 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
-from .config import api, secret
 
 
 def user_register(request):
@@ -240,10 +239,20 @@ def spot(request):
                 messages.error(request, error)
     else:
         form = SearchCoinForm()
-    client = Client(api, secret)
+    your_models = User.objects.get(username=request.user.username)
+    api_key = your_models.first_name
+    secret_key = your_models.last_name
+    client = Client(api_key, secret_key)
     info = client.get_ticker(symbol='BTCUSDT')
     asset = client.get_symbol_info(symbol='BTCUSDT')
-    return render(request, 'spot_trade.html', {'symbol': info['symbol'], 'price': divine_number(info['lastPrice'], 4), 'change': round(float(info['priceChangePercent']), 2), 'asset': asset['baseAsset'], 'form': form})
+    asset_balance_currency = client.get_asset_balance(asset=asset['quoteAsset'])
+    asset_balance_coin = client.get_asset_balance(asset=asset['baseAsset'])
+    return render(request, 'spot_trade.html', {'symbol': info['symbol'], 'price': divine_number(info['lastPrice'], 4),
+                                               'change': round(float(info['priceChangePercent']), 2),
+                                               'asset': asset['baseAsset'], 'form': form,
+                                               'currency': asset['quoteAsset'],
+                                               'asset_balance_currency': asset_balance_currency['free'],
+                                               'asset_balance_coin': asset_balance_coin['free']})
 
 
 def spot_coin(request):
@@ -258,8 +267,18 @@ def spot_coin(request):
                 messages.error(request, error)
     else:
         form = SearchCoinForm()
-    client = Client(api, secret)
+    your_models = User.objects.get(username=request.user.username)
+    api_key = your_models.first_name
+    secret_key = your_models.last_name
+    client = Client(api_key, secret_key)
     name = SearchCoinModel.objects.all()
     info = client.get_ticker(symbol=name.last().name_coin)
     asset = client.get_symbol_info(symbol=name.last().name_coin)
-    return render(request, 'spot_trade.html', {'symbol': info['symbol'], 'price': divine_number(info['lastPrice'], 4), 'change': round(float(info['priceChangePercent']), 2), 'asset': asset['baseAsset'], 'form': form})
+    asset_balance_currency = client.get_asset_balance(asset=asset['quoteAsset'])
+    asset_balance_coin = client.get_asset_balance(asset=asset['baseAsset'])
+    return render(request, 'spot_trade.html', {'symbol': info['symbol'], 'price': divine_number(info['lastPrice'], 4),
+                                               'change': round(float(info['priceChangePercent']), 2),
+                                               'asset': asset['baseAsset'], 'form': form,
+                                               'currency': asset['quoteAsset'],
+                                               'asset_balance_currency': asset_balance_currency['free'],
+                                               'asset_balance_coin': asset_balance_coin['free']})

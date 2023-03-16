@@ -63,10 +63,10 @@
       ${{ price }}
     </div>
     <div class="navbar-change">
-      {% if change < '0' %}
-      <span class="change-positive" style="color: red;">-{{ change }}%</span>
-      {% else %}
+      {% if change > '0' %}
       <span class="change-positive" style="color: green;">+{{ change }}%</span>
+      {% else %}
+      <span class="change-positive" style="color: red;">{{ change }}%</span>
       {% endif %}
     </div>
     <form class="search-form" style="width: 20%;" method="post">
@@ -100,31 +100,31 @@
     <div class="form-container">
       <form class="buy-form">
         <div class="form-group">
-          <label for="buy-price">Price (USDT)</label>
-          <input type="text" id="buy-price" name="buy-price">
+          <span>Avbl</span> <b>{{ asset_balance_currency }} {{ currency }}</b>
         </div>
         <div class="form-group">
-          <label for="buy-amount">Amount ({{ asset }})</label>
-          <input type="text" id="buy-amount" name="buy-amount">
+          <input placeholder = "Price ({{ currency }})" type="text" id="buy-price" name="buy-price">
         </div>
         <div class="form-group">
-          <label for="buy-total">Total (USDT)</label>
-          <input type="text" id="buy-total" name="buy-total" readonly>
+          <input placeholder="Amount ({{ asset }})" type="text" id="buy-amount" name="buy-amount">
+        </div>
+        <div class="form-group">
+          <input placeholder="Total ({{ currency }})" type="text" id="buy-total" name="buy-total" readonly>
         </div>
         <button type="submit" class="btn btn-success">Buy {{ asset }}</button>
       </form>
       <form class="sell-form">
         <div class="form-group">
-          <label for="sell-price">Price (USDT)</label>
-          <input type="text" id="sell-price" name="sell-price">
+          <span>Avbl</span> <b>{{ asset_balance_coin }} {{ asset }}</b>
         </div>
         <div class="form-group">
-          <label for="sell-amount">Amount ({{ asset }})</label>
-          <input type="text" id="sell-amount" name="sell-amount">
+          <input placeholder="Price ({{ currency }})" type="text" id="sell-price" name="sell-price">
         </div>
         <div class="form-group">
-          <label for="sell-total">Total (USDT)</label>
-          <input type="text" id="sell-total" name="sell-total" readonly>
+          <input placeholder="Amount ({{ asset }})" type="text" id="sell-amount" name="sell-amount">
+        </div>
+        <div class="form-group">
+          <input placeholder="Total ({{ currency }})" type="text" id="sell-total" name="sell-total" readonly>
         </div>
         <button type="submit" class="btn btn-danger">Sell {{ asset }}</button>
       </form>
