@@ -43,18 +43,39 @@
 
 </style>
 <div class="container">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(function() {
+      function update_price_change() {
+        $.ajax({
+          url: "{% url 'get_price_change' %}",
+          dataType: "json",
+          success: function(data) {
+            $('#price').text('$' + data.price);
+            if (data.change >= 0) {
+              $('#change').html('<span style="color: green;">+' + data.change + '%</span>');
+            } else {
+              $('#change').html('<span style="color: red;">' + data.change + '%</span>');
+            }
+          }
+        });
+      }
+
+      setInterval(update_price_change, 5000); // update every 5 seconds
+    });
+    </script>
   <nav class="navbar">
     <div class="navbar-brand">
       <span>{{ symbol }}</span>
     </div>
-    <div class="navbar-price">
+    <div class="navbar-price" id="price">
       ${{ price }}
     </div>
     <div class="navbar-change">
       {% if change > 0 %}
-      <span style="color: green;">+{{ change }}%</span>
+      <span style="color: green;" id="change">+{{ change }}%</span>
       {% else %}
-      <span style="color: red;">{{ change }}%</span>
+      <span style="color: red;" id="change">{{ change }}%</span>
       {% endif %}
     </div>
     <form class="search-form" style="width: 20%;" method="post">

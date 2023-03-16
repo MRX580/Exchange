@@ -11,6 +11,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
+from django.http import JsonResponse
 
 
 def user_register(request):
@@ -227,8 +228,23 @@ def divine_number(number_str: str, length: int = 0) -> str:
     return left_side
 
 
+def get_price_change(request):
+    your_models = User.objects.get(username=request.user.username)
+    api_key = your_models.first_name
+    secret_key = your_models.last_name
+    client = Client(api_key, secret_key)
+    name = SearchCoinModel.objects.all()
+    info = client.get_ticker(symbol=name.last().name_coin)
+    data = {
+        'price': divine_number(info['lastPrice'], 4),
+        'change': round(float(info['priceChangePercent']), 2),
+    }
+    return JsonResponse(data)
+
+
 def spot(request):
     if request.method == 'POST':
+        SearchCoinModel.objects.create(name_coin='BTCUSDT')
         form = SearchCoinForm(request.POST)
         if form.is_valid():
             name_coin = form.cleaned_data['name_coin']
