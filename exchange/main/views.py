@@ -234,11 +234,19 @@ def get_price_change(request):
     api_key = your_models.first_name
     secret_key = your_models.last_name
     client = Client(api_key, secret_key)
-    info = client.get_ticker(symbol=request.COOKIES['name'])
-    data = {
-        'price': divine_number(info['lastPrice'], 4),
-        'change': round(float(info['priceChangePercent']), 2),
-    }
+    is_first = True if request.COOKIES['is_first'] == 'True' else False
+    if not is_first:
+        info = client.get_ticker(symbol=request.COOKIES['name'])
+        data = {
+            'price': divine_number(info['lastPrice'], 4),
+            'change': round(float(info['priceChangePercent']), 2),
+        }
+    else:
+        info = client.get_ticker(symbol='BTCUSDT')
+        data = {
+            'price': divine_number(info['lastPrice'], 4),
+            'change': round(float(info['priceChangePercent']), 2),
+        }
     return JsonResponse(data)
 
 
@@ -250,6 +258,7 @@ def spot(request):
             name_coin = form.cleaned_data['name_coin']
             response = redirect('spot_coin')
             response.set_cookie('name', name_coin)
+            response.set_cookie('is_first', False)
             return response
         else:
             for error in list(form.errors.values()):
@@ -264,12 +273,14 @@ def spot(request):
     asset = client.get_symbol_info(symbol=name)
     asset_balance_currency = client.get_asset_balance(asset=asset['quoteAsset'])
     asset_balance_coin = client.get_asset_balance(asset=asset['baseAsset'])
-    return render(request, 'spot_trade.html', {'symbol': info['symbol'], 'price': divine_number(info['lastPrice'], 4),
+    responce = render(request, 'spot_trade.html', {'symbol': info['symbol'], 'price': divine_number(info['lastPrice'], 4),
                                                'change': round(float(info['priceChangePercent']), 2),
                                                'asset': asset['baseAsset'], 'form': form,
                                                'currency': asset['quoteAsset'],
                                                'asset_balance_currency': asset_balance_currency['free'],
                                                'asset_balance_coin': asset_balance_coin['free']})
+    responce.set_cookie('is_first', True)
+    return responce
 
 
 def spot_coin(request):
@@ -279,6 +290,7 @@ def spot_coin(request):
             name_coin = form.cleaned_data['name_coin']
             response = redirect('spot_coin')
             response.set_cookie('name', name_coin)
+            response.set_cookie('is_first', False)
             return response
         else:
             for error in list(form.errors.values()):

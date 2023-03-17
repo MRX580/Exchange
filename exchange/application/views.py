@@ -61,6 +61,7 @@ def home(request):
             name_coin = form.cleaned_data['name_coin']
             response = redirect('spot_coin')
             response.set_cookie('name', name_coin)
+            response.set_cookie('is_first', False)
             return response
         else:
             for error in list(form.errors.values()):
