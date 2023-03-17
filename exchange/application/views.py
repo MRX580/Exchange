@@ -59,8 +59,9 @@ def home(request):
         form = SearchMainPageForm(request.POST)
         if form.is_valid():
             name_coin = form.cleaned_data['name_coin']
-            SearchCoinModel.objects.create(name_coin=name_coin)
-            return redirect('spot_coin')
+            response = redirect('spot_coin')
+            response.set_cookie('name', name_coin)
+            return response
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)

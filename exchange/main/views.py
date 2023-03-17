@@ -52,7 +52,8 @@ def activateEmail(request, user, to_email):
         messages.success(request, f'Дорогой {user}, пожалуйста перейдите на вашу электронную почту {to_email} входящие и нажмите \
              получена ссылка активации для подтверждения и завершения регистрации. Примечание: Посмотрите папку спам.')
     else:
-        messages.error(request, f'Проблема с отправкой письма с подтверждением на {to_email}, посмотрите всели вы написали коректно.')
+        messages.error(request,
+                       f'Проблема с отправкой письма с подтверждением на {to_email}, посмотрите всели вы написали коректно.')
 
 
 def activate(request, uidb64, token):
@@ -233,8 +234,7 @@ def get_price_change(request):
     api_key = your_models.first_name
     secret_key = your_models.last_name
     client = Client(api_key, secret_key)
-    name = SearchCoinModel.objects.all()
-    info = client.get_ticker(symbol=name.last().name_coin)
+    info = client.get_ticker(symbol=request.COOKIES['name'])
     data = {
         'price': divine_number(info['lastPrice'], 4),
         'change': round(float(info['priceChangePercent']), 2),
@@ -248,8 +248,9 @@ def spot(request):
         form = SearchCoinForm(request.POST)
         if form.is_valid():
             name_coin = form.cleaned_data['name_coin']
-            SearchCoinModel.objects.create(name_coin=name_coin)
-            return redirect('spot_coin')
+            response = redirect('spot_coin')
+            response.set_cookie('name', name_coin)
+            return response
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
@@ -276,8 +277,9 @@ def spot_coin(request):
         form = SearchCoinForm(request.POST)
         if form.is_valid():
             name_coin = form.cleaned_data['name_coin']
-            SearchCoinModel.objects.create(name_coin=name_coin)
-            return redirect('spot_coin')
+            response = redirect('spot_coin')
+            response.set_cookie('name', name_coin)
+            return response
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
@@ -287,9 +289,8 @@ def spot_coin(request):
     api_key = your_models.first_name
     secret_key = your_models.last_name
     client = Client(api_key, secret_key)
-    name = SearchCoinModel.objects.all()
-    info = client.get_ticker(symbol=name.last().name_coin)
-    asset = client.get_symbol_info(symbol=name.last().name_coin)
+    info = client.get_ticker(symbol=request.COOKIES['name'])
+    asset = client.get_symbol_info(symbol=request.COOKIES['name'])
     asset_balance_currency = client.get_asset_balance(asset=asset['quoteAsset'])
     asset_balance_coin = client.get_asset_balance(asset=asset['baseAsset'])
     return render(request, 'spot_trade.html', {'symbol': info['symbol'], 'price': divine_number(info['lastPrice'], 4),
