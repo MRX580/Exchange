@@ -8,7 +8,6 @@ from .serializers import MyModelSerializer
 from .models import Coins
 from .forms import UserRegisterForm, UserLoginForm, SearchMainPageForm
 from .config import *
-from main.models import SearchCoinModel
 
 
 class CoinsListView(generics.ListCreateAPIView):

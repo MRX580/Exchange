@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import UserRegisterForm, UserLoginForm, NameCoinForm, SearchCoinForm
-from .models import FilterModel, SearchCoinModel
+from .models import FilterModel
 from binance.client import Client
 from django.contrib.auth import login, get_user_model
 from django.contrib.auth.models import User
