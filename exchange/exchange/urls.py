@@ -7,7 +7,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('__debug__/', include('debug_toolbar.urls')),
     path('', include('application.urls')),
-    path('chart/', include('charts.urls')),
     path('blog/', include('blog.urls')),
     path('wallet/', include('main.urls')),
 ] + static(MEDIA_URL, document_root=MEDIA_ROOT)
