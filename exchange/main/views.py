@@ -12,6 +12,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
 
 def user_register(request):
@@ -91,9 +92,9 @@ def user_login(request):
 
 
 def account(request):
-    your_models = User.objects.get(username=request.user.username)
-    api_key = your_models.first_name
-    secret_key = your_models.last_name
+    user = get_object_or_404(User, username=request.user.username)
+    api_key = user.first_name
+    secret_key = user.last_name
     client = Client(api_key, secret_key)
     info = client.get_account().get('balances')
     data = {'get_symbol_ticker': client.get_symbol_ticker(), 'get_ticker': client.get_ticker()}
@@ -200,24 +201,33 @@ def history_spot(request):
                 messages.error(request, error)
     else:
         form = NameCoinForm()
-    your_models = User.objects.get(username=request.user.username)
-    api_key = your_models.first_name
-    secret_key = your_models.last_name
+    
+    user = get_object_or_404(User, username=request.user.username)
+    api_key = user.first_name
+    secret_key = user.last_name
     client = Client(api_key, secret_key)
-    all = FilterModel.objects.all()
+
+    all_filters = FilterModel.objects.all()
     info = []
-    inf = client.get_all_orders(symbol=all.last().name_coin)
-    if all.last().choice_status == 'All':
-        for j in inf:
-            info.append(j)
-    elif all.last().choice_status == 'Filled':
-        for j in inf:
-            if j['status'] == 'FILLED':
+
+    if all_filters.exists():
+        last_filter = all_filters.last()
+        inf = client.get_all_orders(symbol=last_filter.name_coin)
+        
+        if last_filter.choice_status == 'All':
+            for j in inf:
                 info.append(j)
-    elif all.last().choice_status == 'Canceled':
-        for j in inf:
-            if j['status'] == 'CANCELED':
-                info.append(j)
+        elif last_filter.choice_status == 'Filled':
+            for j in inf:
+                if j['status'] == 'FILLED':
+                    info.append(j)
+        elif last_filter.choice_status == 'Canceled':
+            for j in inf:
+                if j['status'] == 'CANCELED':
+                    info.append(j)
+    else:
+        messages.info(request, "Нет доступных фильтров для отображения истории сделок.")
+
     return render(request, 'history_spot.html', {'info': info, 'form': form})
 
 
